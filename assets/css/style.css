@@ -84,53 +84,69 @@
     justify-content: center;
     z-index: 3;
     position: relative;
+    width: 0;
 }
 
-/* Timeline Dot */
+/* Remove old static dot styles */
 .timeline-dot {
-    width: 20px;
-    height: 20px;
-    background-color: #d1d5db;
+    display: none;
+}
+
+/* Moving Timeline Marker */
+.timeline-moving-marker {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #3b82f6;
     border: 3px solid #ffffff;
     border-radius: 50%;
-    transition: all 0.3s ease;
-    position: relative;
-    z-index: 4;
-    box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4);
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    z-index: 10;
+    transition: top 0.1s linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
-.timeline-dot.active {
-    background-color: #3b82f6;
-    animation: pulse 2s infinite;
+.timeline-moving-marker[data-marker-type="icon"] {
+    background-color: #ffffff;
 }
 
-@keyframes pulse {
+.timeline-moving-marker i,
+.timeline-moving-marker svg {
+    color: #3b82f6;
+    fill: #3b82f6;
+}
+
+/* Pulse Animation for Moving Marker */
+.timeline-moving-marker.with-pulse {
+    animation: markerPulse 2s infinite;
+}
+
+@keyframes markerPulse {
     0% {
         box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
     }
     70% {
-        box-shadow: 0 0 0 15px rgba(59, 130, 246, 0);
+        box-shadow: 0 0 0 20px rgba(59, 130, 246, 0);
     }
     100% {
         box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
     }
 }
 
-/* Hover Effects */
-.timeline-item:hover .timeline-dot {
-    transform: scale(1.2);
+/* Mobile Moving Marker Position */
+.timeline-mobile .timeline-moving-marker {
+    left: 0;
+    transform: translateX(-50%);
 }
 
-/* Fade In Animation */
-.timeline-item {
-    opacity: 0;
-    transform: translateY(30px);
-    transition: opacity 0.6s ease, transform 0.6s ease;
-}
-
-.timeline-item.visible {
-    opacity: 1;
-    transform: translateY(0);
+/* Hover Effects on Timeline Items */
+.timeline-item:hover {
+    /* Optional hover effect */
 }
 
 /* Mobile Layout */
@@ -267,4 +283,36 @@ html {
 .elementor-editor-active .timeline-placeholder {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     border-style: dashed;
+}
+
+/* Loading Animation */
+.timeline-loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+}
+
+.timeline-loading i {
+    font-size: 24px;
+    color: #3b82f6;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.eicon-animation-spin {
+    animation: spin 1s linear infinite;
+}
+
+/* Prevent flash during template load */
+.timeline-inner-container {
+    transition: opacity 0.3s ease;
+}
+
+.timeline-inner-container.loading {
+    opacity: 0.5;
 }

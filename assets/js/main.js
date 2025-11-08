@@ -124,7 +124,7 @@
             const $line = timelineData.$line;
             const $progress = timelineData.$progress;
             const $items = timelineData.$items;
-            const $dots = timelineData.$dots;
+            const $movingMarker = $line.find('.timeline-moving-marker');
 
             const lineTop = $line.offset().top;
             const lineHeight = $line.height();
@@ -145,18 +145,23 @@
             // Update progress bar
             $progress.css('height', progress + '%');
 
-            // Update dots
+            // Update moving marker position
+            if ($movingMarker.length) {
+                const markerPosition = (progress / 100) * lineHeight;
+                $movingMarker.css('top', markerPosition + 'px');
+            }
+
+            // Optional: Add visual feedback to items as marker passes them
             $items.each((index, item) => {
                 const $item = $(item);
-                const $dot = $dots.eq(index);
                 const itemTop = $item.offset().top;
                 const itemMiddle = itemTop + ($item.height() / 2);
                 
-                // Activate dot if scrolled past middle of item
+                // Add 'active' class to passed items
                 if (scrollBottom >= itemMiddle) {
-                    $dot.addClass('active');
+                    $item.addClass('passed');
                 } else {
-                    $dot.removeClass('active');
+                    $item.removeClass('passed');
                 }
             });
         }

@@ -171,63 +171,98 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
 
-        // Timeline Dot Style
+        // Timeline Moving Marker
         $this->start_controls_section(
-            'timeline_dot_style',
+            'timeline_moving_marker_style',
             [
-                'label' => __('Timeline Dot', 'custom-timeline-by-uchit'),
+                'label' => __('Moving Timeline Marker', 'custom-timeline-by-uchit'),
                 'tab' => \Elementor\Controls_Manager::TAB_STYLE,
             ]
         );
 
-        $this->add_responsive_control(
-            'dot_size',
+        $this->add_control(
+            'marker_type',
             [
-                'label' => __('Dot Size', 'custom-timeline-by-uchit'),
+                'label' => __('Marker Type', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SELECT,
+                'default' => 'dot',
+                'options' => [
+                    'dot' => __('Dot/Circle', 'custom-timeline-by-uchit'),
+                    'icon' => __('Icon', 'custom-timeline-by-uchit'),
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'marker_icon',
+            [
+                'label' => __('Choose Icon', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::ICONS,
+                'default' => [
+                    'value' => 'fas fa-circle',
+                    'library' => 'fa-solid',
+                ],
+                'condition' => [
+                    'marker_type' => 'icon',
+                ],
+            ]
+        );
+
+        $this->add_responsive_control(
+            'moving_marker_size',
+            [
+                'label' => __('Marker Size', 'custom-timeline-by-uchit'),
                 'type' => \Elementor\Controls_Manager::SLIDER,
                 'size_units' => ['px'],
                 'range' => [
                     'px' => [
-                        'min' => 10,
-                        'max' => 50,
+                        'min' => 20,
+                        'max' => 100,
                     ],
                 ],
                 'default' => [
                     'unit' => 'px',
-                    'size' => 20,
+                    'size' => 30,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-dot' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .timeline-moving-marker' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .timeline-moving-marker i' => 'font-size: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .timeline-moving-marker svg' => 'width: {{SIZE}}{{UNIT}}; height: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
 
         $this->add_control(
-            'dot_color',
+            'moving_marker_color',
             [
-                'label' => __('Dot Color', 'custom-timeline-by-uchit'),
-                'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#d1d5db',
-                'selectors' => [
-                    '{{WRAPPER}} .timeline-dot' => 'background-color: {{VALUE}};',
-                ],
-            ]
-        );
-
-        $this->add_control(
-            'active_dot_color',
-            [
-                'label' => __('Active Dot Color', 'custom-timeline-by-uchit'),
+                'label' => __('Marker Color', 'custom-timeline-by-uchit'),
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '#3b82f6',
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-dot.active' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-moving-marker' => 'background-color: {{VALUE}}; color: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-moving-marker i' => 'color: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-moving-marker svg' => 'fill: {{VALUE}};',
+                ],
+            ]
+        );
+
+        $this->add_control(
+            'moving_marker_bg_color',
+            [
+                'label' => __('Background Color', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::COLOR,
+                'default' => '#ffffff',
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-moving-marker' => 'background-color: {{VALUE}};',
+                ],
+                'condition' => [
+                    'marker_type' => 'icon',
                 ],
             ]
         );
 
         $this->add_responsive_control(
-            'dot_border_width',
+            'moving_marker_border_width',
             [
                 'label' => __('Border Width', 'custom-timeline-by-uchit'),
                 'type' => \Elementor\Controls_Manager::SLIDER,
@@ -243,19 +278,19 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     'size' => 3,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-dot' => 'border-width: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .timeline-moving-marker' => 'border-width: {{SIZE}}{{UNIT}}; border-style: solid;',
                 ],
             ]
         );
 
         $this->add_control(
-            'dot_border_color',
+            'moving_marker_border_color',
             [
                 'label' => __('Border Color', 'custom-timeline-by-uchit'),
                 'type' => \Elementor\Controls_Manager::COLOR,
-                'default' => '#ffffff',
+                'default' => '#3b82f6',
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-dot' => 'border-color: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-moving-marker' => 'border-color: {{VALUE}};',
                 ],
             ]
         );
@@ -263,9 +298,21 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
         $this->add_group_control(
             \Elementor\Group_Control_Box_Shadow::get_type(),
             [
-                'name' => 'dot_box_shadow',
+                'name' => 'moving_marker_box_shadow',
                 'label' => __('Box Shadow', 'custom-timeline-by-uchit'),
-                'selector' => '{{WRAPPER}} .timeline-dot',
+                'selector' => '{{WRAPPER}} .timeline-moving-marker',
+            ]
+        );
+
+        $this->add_control(
+            'moving_marker_animation',
+            [
+                'label' => __('Pulse Animation', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SWITCHER,
+                'label_on' => __('Yes', 'custom-timeline-by-uchit'),
+                'label_off' => __('No', 'custom-timeline-by-uchit'),
+                'return_value' => 'yes',
+                'default' => 'yes',
             ]
         );
 
@@ -515,6 +562,9 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
         $timeline_items = $settings['timeline_items'];
         $widget_id = $this->get_id();
         $mobile_breakpoint = $settings['mobile_breakpoint']['size'] ?? 768;
+        $marker_type = $settings['marker_type'] ?? 'dot';
+        $marker_icon = $settings['marker_icon'] ?? [];
+        $marker_animation = $settings['moving_marker_animation'] ?? 'yes';
 
         ?>
         <div class="custom-timeline-wrapper" data-widget-id="<?php echo esc_attr($widget_id); ?>" data-breakpoint="<?php echo esc_attr($mobile_breakpoint); ?>">
@@ -524,6 +574,13 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 <div class="timeline-line-wrapper">
                     <div class="timeline-line">
                         <div class="timeline-line-progress"></div>
+                        
+                        <!-- Moving Marker -->
+                        <div class="timeline-moving-marker <?php echo $marker_animation === 'yes' ? 'with-pulse' : ''; ?>" data-marker-type="<?php echo esc_attr($marker_type); ?>">
+                            <?php if ($marker_type === 'icon' && !empty($marker_icon['value'])) : ?>
+                                <?php \Elementor\Icons_Manager::render_icon($marker_icon, ['aria-hidden' => 'true']); ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
@@ -542,7 +599,7 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                         </div>
 
                         <div class="timeline-center">
-                            <div class="timeline-dot" data-index="<?php echo esc_attr($index); ?>"></div>
+                            <!-- Empty center for spacing -->
                         </div>
 
                         <div class="timeline-content-right">
@@ -565,13 +622,18 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 <div class="timeline-line-wrapper">
                     <div class="timeline-line">
                         <div class="timeline-line-progress"></div>
+                        
+                        <!-- Moving Marker -->
+                        <div class="timeline-moving-marker <?php echo $marker_animation === 'yes' ? 'with-pulse' : ''; ?>" data-marker-type="<?php echo esc_attr($marker_type); ?>">
+                            <?php if ($marker_type === 'icon' && !empty($marker_icon['value'])) : ?>
+                                <?php \Elementor\Icons_Manager::render_icon($marker_icon, ['aria-hidden' => 'true']); ?>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
 
                 <?php foreach ($timeline_items as $index => $item) : ?>
                     <div class="timeline-item" data-item-index="<?php echo esc_attr($index); ?>">
-                        <div class="timeline-dot" data-index="<?php echo esc_attr($index); ?>"></div>
-                        
                         <div class="timeline-content-wrapper">
                             <div class="timeline-content-left">
                                 <div class="timeline-inner-container">
@@ -609,7 +671,10 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
         <#
         var widgetId = view.getID();
         var mobileBreakpoint = settings.mobile_breakpoint.size || 768;
+        var markerType = settings.marker_type || 'dot';
+        var markerAnimation = settings.moving_marker_animation || 'yes';
         #>
+        
         <div class="custom-timeline-wrapper" data-widget-id="{{ widgetId }}" data-breakpoint="{{ mobileBreakpoint }}">
             
             <!-- Desktop Timeline -->
@@ -617,6 +682,13 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 <div class="timeline-line-wrapper">
                     <div class="timeline-line">
                         <div class="timeline-line-progress"></div>
+                        
+                        <!-- Moving Marker Preview -->
+                        <div class="timeline-moving-marker {{ markerAnimation === 'yes' ? 'with-pulse' : '' }}" data-marker-type="{{ markerType }}" style="top: 0;">
+                            <# if (markerType === 'icon' && settings.marker_icon && settings.marker_icon.value) { #>
+                                <i class="{{ settings.marker_icon.value }}"></i>
+                            <# } #>
+                        </div>
                     </div>
                 </div>
 
@@ -624,25 +696,41 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     <div class="timeline-item" data-item-index="{{ index }}">
                         <div class="timeline-content-left">
                             <div class="timeline-inner-container">
-                                <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
-                                    <i class="eicon-drag-n-drop" style="font-size: 32px; color: #ccc; display: block; margin-bottom: 10px;"></i>
-                                    <p style="margin: 0; color: #999; font-size: 14px;">Left Container {{ index + 1 }}</p>
-                                    <p style="margin: 5px 0 0; color: #bbb; font-size: 12px;">Select template or edit directly</p>
-                                </div>
+                                <# if (item.left_template_id && item.left_template_id !== '') { #>
+                                    <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
+                                        <i class="eicon-document-file" style="font-size: 32px; color: #3b82f6; display: block; margin-bottom: 10px;"></i>
+                                        <p style="margin: 0; color: #555; font-size: 14px; font-weight: 600;">Template Selected</p>
+                                        <p style="margin: 5px 0 0; color: #999; font-size: 12px;">Preview available on frontend</p>
+                                    </div>
+                                <# } else { #>
+                                    <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
+                                        <i class="eicon-drag-n-drop" style="font-size: 32px; color: #ccc; display: block; margin-bottom: 10px;"></i>
+                                        <p style="margin: 0; color: #999; font-size: 14px;">Left Container {{ index + 1 }}</p>
+                                        <p style="margin: 5px 0 0; color: #bbb; font-size: 12px;">Select a template to begin</p>
+                                    </div>
+                                <# } #>
                             </div>
                         </div>
 
                         <div class="timeline-center">
-                            <div class="timeline-dot" data-index="{{ index }}"></div>
+                            <!-- Empty center -->
                         </div>
 
                         <div class="timeline-content-right">
                             <div class="timeline-inner-container">
-                                <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
-                                    <i class="eicon-drag-n-drop" style="font-size: 32px; color: #ccc; display: block; margin-bottom: 10px;"></i>
-                                    <p style="margin: 0; color: #999; font-size: 14px;">Right Container {{ index + 1 }}</p>
-                                    <p style="margin: 5px 0 0; color: #bbb; font-size: 12px;">Select template or edit directly</p>
-                                </div>
+                                <# if (item.right_template_id && item.right_template_id !== '') { #>
+                                    <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
+                                        <i class="eicon-document-file" style="font-size: 32px; color: #3b82f6; display: block; margin-bottom: 10px;"></i>
+                                        <p style="margin: 0; color: #555; font-size: 14px; font-weight: 600;">Template Selected</p>
+                                        <p style="margin: 5px 0 0; color: #999; font-size: 12px;">Preview available on frontend</p>
+                                    </div>
+                                <# } else { #>
+                                    <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
+                                        <i class="eicon-drag-n-drop" style="font-size: 32px; color: #ccc; display: block; margin-bottom: 10px;"></i>
+                                        <p style="margin: 0; color: #999; font-size: 14px;">Right Container {{ index + 1 }}</p>
+                                        <p style="margin: 5px 0 0; color: #bbb; font-size: 12px;">Select a template to begin</p>
+                                    </div>
+                                <# } #>
                             </div>
                         </div>
                     </div>
@@ -654,13 +742,16 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 <div class="timeline-line-wrapper">
                     <div class="timeline-line">
                         <div class="timeline-line-progress"></div>
+                        <div class="timeline-moving-marker {{ markerAnimation === 'yes' ? 'with-pulse' : '' }}" data-marker-type="{{ markerType }}">
+                            <# if (markerType === 'icon' && settings.marker_icon && settings.marker_icon.value) { #>
+                                <i class="{{ settings.marker_icon.value }}"></i>
+                            <# } #>
+                        </div>
                     </div>
                 </div>
 
                 <# _.each( settings.timeline_items, function( item, index ) { #>
                     <div class="timeline-item" data-item-index="{{ index }}">
-                        <div class="timeline-dot" data-index="{{ index }}"></div>
-                        
                         <div class="timeline-content-wrapper">
                             <div class="timeline-content-left">
                                 <div class="timeline-inner-container">

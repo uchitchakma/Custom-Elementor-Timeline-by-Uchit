@@ -29,7 +29,7 @@ class CustomTimelineByUchit {
         add_action('plugins_loaded', [$this, 'init']);
     }
     
-    public function init() {
+        public function init() {
         // Check if Elementor is installed and activated
         if (!did_action('elementor/loaded')) {
             add_action('admin_notices', [$this, 'admin_notice_missing_main_plugin']);
@@ -45,7 +45,35 @@ class CustomTimelineByUchit {
         
         // Add admin menu
         add_action('admin_menu', [$this, 'add_admin_menu']);
+        
+        // Add AJAX handlers
+        add_action('wp_ajax_timeline_get_template_content', [$this, 'ajax_get_template_content']);
+        add_action('wp_ajax_nopriv_timeline_get_template_content', [$this, 'ajax_get_template_content']);
     }
+
+
+        // Add this new method after enqueue_styles
+    public function ajax_get_template_content() {
+        // Verify nonce if needed
+        if (!isset($_POST['template_id']) || empty($_POST['template_id'])) {
+            wp_send_json_error(['message' => 'No template ID provided']);
+        }
+        
+        $template_id = intval($_POST['template_id']);
+        
+        if ($template_id <= 0) {
+            wp_send_json_error(['message' => 'Invalid template ID']);
+        }
+        
+        $content = \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($template_id);
+        
+        if (empty($content)) {
+            wp_send_json_error(['message' => 'Template not found or empty']);
+        }
+        
+        wp_send_json_success(['content' => $content]);
+    }
+    
     
     public function admin_notice_missing_main_plugin() {
         if (isset($_GET['activate'])) {
