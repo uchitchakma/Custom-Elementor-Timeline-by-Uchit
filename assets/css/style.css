@@ -214,10 +214,11 @@
     }
     
     /* CRITICAL: Mobile marker - OVERRIDE desktop styles */
+    /* CRITICAL: Mobile marker - OVERRIDE desktop styles */
     .timeline-mobile .timeline-moving-marker {
         position: absolute !important;
         left: 0 !important;
-        transform: translateX(-50%) !important;
+        transform: translateX(-50%) rotate(0deg) !important;
         top: 0 !important;
         display: flex !important;
         visibility: visible !important;

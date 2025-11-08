@@ -179,14 +179,14 @@
                 timelineData.isMobile = true;
                 console.log('Mobile mode activated');
                 
-                // Force mobile marker setup
+                // Force mobile marker setup - DON'T touch transform
                 setTimeout(() => {
                     const $mobileMarker = timelineData.$mobile.find('.timeline-moving-marker');
                     if ($mobileMarker.length) {
                         const markerElement = $mobileMarker[0];
                         markerElement.style.setProperty('position', 'absolute', 'important');
-                        markerElement.style.setProperty('left', '20px', 'important');
-                        markerElement.style.setProperty('transform', 'translateX(-50%)', 'important');
+                        markerElement.style.setProperty('left', '0', 'important');
+                        // DON'T set transform - let CSS handle rotation
                         markerElement.style.setProperty('display', 'flex', 'important');
                         markerElement.style.setProperty('visibility', 'visible', 'important');
                         console.log('Mobile marker forced setup complete');
@@ -261,7 +261,6 @@
             if ($progress && $progress.length) {
                 const progressElement = $progress[0];
                 if (progressElement) {
-                    // Force with setProperty for mobile
                     progressElement.style.setProperty('height', progress + '%', 'important');
                     progressElement.style.setProperty('background-color', '#3b82f6', 'important');
                     progressElement.style.setProperty('width', '100%', 'important');
@@ -281,7 +280,8 @@
                 const markerElement = $movingMarker[0];
                 
                 if (markerElement) {
-                    // Only update top position, don't touch transform (rotation is set via CSS)
+                    // Only update top and left position
+                    // DON'T touch transform - let CSS handle rotation
                     markerElement.style.setProperty('top', markerPosition + 'px', 'important');
                     markerElement.style.setProperty('position', 'absolute', 'important');
                     markerElement.style.setProperty('display', 'flex', 'important');
@@ -290,7 +290,6 @@
                     markerElement.style.setProperty('z-index', '10', 'important');
                     
                     // Set left position differently for desktop vs mobile
-                    // But DON'T set transform - let CSS handle it with rotation
                     if (timelineData.isMobile) {
                         markerElement.style.setProperty('left', '0', 'important');
                         console.log('Mobile marker forced to:', markerPosition + 'px');
