@@ -23,7 +23,7 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
     }
 
     public function get_keywords() {
-        return ['timeline', 'history', 'process', 'custom'];
+        return ['timeline', 'history', 'process', 'custom', 'container'];
     }
 
     public function get_script_depends() {
@@ -32,6 +32,10 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
 
     public function get_style_depends() {
         return ['custom-timeline-widget'];
+    }
+
+    public function show_in_panel() {
+        return true;
     }
 
     protected function register_controls() {
@@ -48,12 +52,34 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
         $repeater = new \Elementor\Repeater();
 
         $repeater->add_control(
-            'item_id',
+            'item_title',
             [
-                'label' => __('Item ID', 'custom-timeline-by-uchit'),
+                'label' => __('Item Title', 'custom-timeline-by-uchit'),
                 'type' => \Elementor\Controls_Manager::TEXT,
-                'default' => '',
-                'description' => __('Unique identifier for this timeline item (auto-generated)', 'custom-timeline-by-uchit'),
+                'default' => __('Timeline Item', 'custom-timeline-by-uchit'),
+                'label_block' => true,
+            ]
+        );
+
+        // Left Container Template ID
+        $repeater->add_control(
+            'left_template_id',
+            [
+                'label' => __('Left Container Template', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SELECT2,
+                'options' => $this->get_page_templates(),
+                'label_block' => true,
+            ]
+        );
+
+        // Right Container Template ID
+        $repeater->add_control(
+            'right_template_id',
+            [
+                'label' => __('Right Container Template', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SELECT2,
+                'options' => $this->get_page_templates(),
+                'label_block' => true,
             ]
         );
 
@@ -64,11 +90,25 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::REPEATER,
                 'fields' => $repeater->get_controls(),
                 'default' => [
-                    ['item_id' => ''],
-                    ['item_id' => ''],
-                    ['item_id' => ''],
+                    [
+                        'item_title' => __('Timeline Item 1', 'custom-timeline-by-uchit'),
+                    ],
+                    [
+                        'item_title' => __('Timeline Item 2', 'custom-timeline-by-uchit'),
+                    ],
+                    [
+                        'item_title' => __('Timeline Item 3', 'custom-timeline-by-uchit'),
+                    ],
                 ],
-                'title_field' => 'Timeline Item #{{{ _id }}}',
+                'title_field' => '{{{ item_title }}}',
+            ]
+        );
+
+        $this->add_control(
+            'note',
+            [
+                'type' => \Elementor\Controls_Manager::RAW_HTML,
+                'raw' => __('<div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin-top: 10px;"><strong>💡 How to use:</strong><br>1. Create Elementor templates for your content<br>2. Assign templates to Left/Right containers<br>3. Or edit directly in Navigator panel</div>', 'custom-timeline-by-uchit'),
             ]
         );
 
@@ -231,6 +271,76 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
 
         $this->end_controls_section();
 
+        // Container Style
+        $this->start_controls_section(
+            'container_style',
+            [
+                'label' => __('Container Style', 'custom-timeline-by-uchit'),
+                'tab' => \Elementor\Controls_Manager::TAB_STYLE,
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Background::get_type(),
+            [
+                'name' => 'container_background',
+                'label' => __('Background', 'custom-timeline-by-uchit'),
+                'types' => ['classic', 'gradient'],
+                'selector' => '{{WRAPPER}} .timeline-inner-container',
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Border::get_type(),
+            [
+                'name' => 'container_border',
+                'label' => __('Border', 'custom-timeline-by-uchit'),
+                'selector' => '{{WRAPPER}} .timeline-inner-container',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'container_border_radius',
+            [
+                'label' => __('Border Radius', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', '%'],
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-inner-container' => 'border-radius: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->add_group_control(
+            \Elementor\Group_Control_Box_Shadow::get_type(),
+            [
+                'name' => 'container_box_shadow',
+                'label' => __('Box Shadow', 'custom-timeline-by-uchit'),
+                'selector' => '{{WRAPPER}} .timeline-inner-container',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'container_padding',
+            [
+                'label' => __('Container Padding', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::DIMENSIONS,
+                'size_units' => ['px', 'em', '%'],
+                'default' => [
+                    'top' => 20,
+                    'right' => 20,
+                    'bottom' => 20,
+                    'left' => 20,
+                    'unit' => 'px',
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-inner-container' => 'padding: {{TOP}}{{UNIT}} {{RIGHT}}{{UNIT}} {{BOTTOM}}{{UNIT}} {{LEFT}}{{UNIT}};',
+                ],
+            ]
+        );
+
+        $this->end_controls_section();
+
         // Container Spacing
         $this->start_controls_section(
             'container_spacing_style',
@@ -279,8 +389,8 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     'size' => 40,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-content-left' => 'padding-right: {{SIZE}}{{UNIT}};',
-                    '{{WRAPPER}} .timeline-content-right' => 'padding-left: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .timeline-desktop .timeline-content-left' => 'padding-right: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .timeline-desktop .timeline-content-right' => 'padding-left: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -358,7 +468,7 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     'size' => 20,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-mobile .timeline-line' => 'left: {{SIZE}}{{UNIT}};',
+                    '{{WRAPPER}} .timeline-mobile .timeline-line-wrapper' => 'left: {{SIZE}}{{UNIT}};',
                 ],
             ]
         );
@@ -386,27 +496,18 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
             ]
         );
 
-        $this->add_control(
-            'animation_duration',
-            [
-                'label' => __('Animation Duration (ms)', 'custom-timeline-by-uchit'),
-                'type' => \Elementor\Controls_Manager::SLIDER,
-                'range' => [
-                    'px' => [
-                        'min' => 100,
-                        'max' => 1000,
-                    ],
-                ],
-                'default' => [
-                    'size' => 300,
-                ],
-                'condition' => [
-                    'enable_animation' => 'yes',
-                ],
-            ]
-        );
-
         $this->end_controls_section();
+    }
+
+    protected function get_page_templates() {
+        $templates = \Elementor\Plugin::$instance->templates_manager->get_source('local')->get_items();
+        $options = ['' => __('-- Select Template --', 'custom-timeline-by-uchit')];
+        
+        foreach ($templates as $template) {
+            $options[$template['template_id']] = $template['title'];
+        }
+        
+        return $options;
     }
 
     protected function render() {
@@ -426,12 +527,18 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     </div>
                 </div>
 
-                <?php foreach ($timeline_items as $index => $item) : 
-                    $item_id = !empty($item['item_id']) ? $item['item_id'] : 'item-' . $index;
-                ?>
+                <?php foreach ($timeline_items as $index => $item) : ?>
                     <div class="timeline-item" data-item-index="<?php echo esc_attr($index); ?>">
                         <div class="timeline-content-left">
-                            <?php echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($this->get_id() . '-left-' . $index, true); ?>
+                            <div class="timeline-inner-container">
+                                <?php 
+                                if (!empty($item['left_template_id'])) {
+                                    echo \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($item['left_template_id']);
+                                } else {
+                                    echo '<p class="timeline-placeholder">Select a template or add content directly</p>';
+                                }
+                                ?>
+                            </div>
                         </div>
 
                         <div class="timeline-center">
@@ -439,7 +546,15 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                         </div>
 
                         <div class="timeline-content-right">
-                            <?php echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($this->get_id() . '-right-' . $index, true); ?>
+                            <div class="timeline-inner-container">
+                                <?php 
+                                if (!empty($item['right_template_id'])) {
+                                    echo \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($item['right_template_id']);
+                                } else {
+                                    echo '<p class="timeline-placeholder">Select a template or add content directly</p>';
+                                }
+                                ?>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -453,18 +568,34 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     </div>
                 </div>
 
-                <?php foreach ($timeline_items as $index => $item) : 
-                    $item_id = !empty($item['item_id']) ? $item['item_id'] : 'item-' . $index;
-                ?>
+                <?php foreach ($timeline_items as $index => $item) : ?>
                     <div class="timeline-item" data-item-index="<?php echo esc_attr($index); ?>">
                         <div class="timeline-dot" data-index="<?php echo esc_attr($index); ?>"></div>
                         
-                        <div class="timeline-content-left">
-                            <?php echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($this->get_id() . '-left-' . $index, true); ?>
-                        </div>
+                        <div class="timeline-content-wrapper">
+                            <div class="timeline-content-left">
+                                <div class="timeline-inner-container">
+                                    <?php 
+                                    if (!empty($item['left_template_id'])) {
+                                        echo \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($item['left_template_id']);
+                                    } else {
+                                        echo '<p class="timeline-placeholder">Select a template</p>';
+                                    }
+                                    ?>
+                                </div>
+                            </div>
 
-                        <div class="timeline-content-right">
-                            <?php echo \Elementor\Plugin::instance()->frontend->get_builder_content_for_display($this->get_id() . '-right-' . $index, true); ?>
+                            <div class="timeline-content-right">
+                                <div class="timeline-inner-container">
+                                    <?php 
+                                    if (!empty($item['right_template_id'])) {
+                                        echo \Elementor\Plugin::$instance->frontend->get_builder_content_for_display($item['right_template_id']);
+                                    } else {
+                                        echo '<p class="timeline-placeholder">Select a template</p>';
+                                    }
+                                    ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -492,11 +623,12 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 <# _.each( settings.timeline_items, function( item, index ) { #>
                     <div class="timeline-item" data-item-index="{{ index }}">
                         <div class="timeline-content-left">
-                            <div class="elementor-container">
-                                <p style="padding: 20px; background: #f3f4f6; border-radius: 8px; text-align: center;">
-                                    Left Container {{{ index + 1 }}}
-                                    <br><small>Add your content here</small>
-                                </p>
+                            <div class="timeline-inner-container">
+                                <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
+                                    <i class="eicon-drag-n-drop" style="font-size: 32px; color: #ccc; display: block; margin-bottom: 10px;"></i>
+                                    <p style="margin: 0; color: #999; font-size: 14px;">Left Container {{ index + 1 }}</p>
+                                    <p style="margin: 5px 0 0; color: #bbb; font-size: 12px;">Select template or edit directly</p>
+                                </div>
                             </div>
                         </div>
 
@@ -505,11 +637,12 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                         </div>
 
                         <div class="timeline-content-right">
-                            <div class="elementor-container">
-                                <p style="padding: 20px; background: #f3f4f6; border-radius: 8px; text-align: center;">
-                                    Right Container {{{ index + 1 }}}
-                                    <br><small>Add your content here</small>
-                                </p>
+                            <div class="timeline-inner-container">
+                                <div class="timeline-placeholder-editor" style="padding: 40px; text-align: center; background: #f8f9fa; border: 2px dashed #ddd; border-radius: 8px;">
+                                    <i class="eicon-drag-n-drop" style="font-size: 32px; color: #ccc; display: block; margin-bottom: 10px;"></i>
+                                    <p style="margin: 0; color: #999; font-size: 14px;">Right Container {{ index + 1 }}</p>
+                                    <p style="margin: 5px 0 0; color: #bbb; font-size: 12px;">Select template or edit directly</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -517,7 +650,7 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
             </div>
 
             <!-- Mobile Timeline -->
-            <div class="timeline-container timeline-mobile">
+            <div class="timeline-container timeline-mobile" style="display: none;">
                 <div class="timeline-line-wrapper">
                     <div class="timeline-line">
                         <div class="timeline-line-progress"></div>
@@ -528,19 +661,17 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     <div class="timeline-item" data-item-index="{{ index }}">
                         <div class="timeline-dot" data-index="{{ index }}"></div>
                         
-                        <div class="timeline-content-left">
-                            <div class="elementor-container">
-                                <p style="padding: 20px; background: #f3f4f6; border-radius: 8px; margin-bottom: 15px;">
-                                    Left Container {{{ index + 1 }}}
-                                </p>
+                        <div class="timeline-content-wrapper">
+                            <div class="timeline-content-left">
+                                <div class="timeline-inner-container">
+                                    <p class="timeline-placeholder">Left Container (Mobile)</p>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="timeline-content-right">
-                            <div class="elementor-container">
-                                <p style="padding: 20px; background: #f3f4f6; border-radius: 8px;">
-                                    Right Container {{{ index + 1 }}}
-                                </p>
+                            <div class="timeline-content-right">
+                                <div class="timeline-inner-container">
+                                    <p class="timeline-placeholder">Right Container (Mobile)</p>
+                                </div>
                             </div>
                         </div>
                     </div>

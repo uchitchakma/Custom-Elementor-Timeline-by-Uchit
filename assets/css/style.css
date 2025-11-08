@@ -206,7 +206,7 @@
     }
 
     .timeline-mobile .timeline-dot {
-        left: 6px;
+        left: 11px;
     }
 }
 
@@ -235,4 +235,36 @@
 /* Smooth Scroll */
 html {
     scroll-behavior: smooth;
+}
+
+/* Timeline Placeholder Styles */
+.timeline-placeholder,
+.timeline-placeholder-editor {
+    text-align: center;
+    padding: 30px 20px;
+    color: #999;
+    background: #f8f9fa;
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.timeline-inner-container {
+    width: 100%;
+    min-height: 50px;
+}
+
+/* Ensure inner content is displayed properly */
+.timeline-inner-container > * {
+    width: 100%;
+}
+
+/* Elementor Editor Specific Styles */
+.elementor-editor-active .timeline-placeholder {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-style: dashed;
 }
