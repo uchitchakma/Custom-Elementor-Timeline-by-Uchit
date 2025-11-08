@@ -223,7 +223,7 @@
             });
         }
 
-            updateTimelineProgress(timelineData) {
+                updateTimelineProgress(timelineData) {
             if (!timelineData.$line || !timelineData.$line.length) {
                 return;
             }
@@ -275,37 +275,27 @@
                 }
             }
 
-            // Update moving marker position - DIFFERENT HANDLING FOR DESKTOP AND MOBILE
+            // Update moving marker position - PRESERVE ROTATION
             if ($movingMarker && $movingMarker.length) {
                 const markerPosition = (progress / 100) * lineHeight;
                 const markerElement = $movingMarker[0];
                 
-                if (timelineData.isMobile) {
-                    // MOBILE: Force with setProperty for maximum compatibility
-                    if (markerElement) {
-                        markerElement.style.setProperty('top', markerPosition + 'px', 'important');
-                        markerElement.style.setProperty('position', 'absolute', 'important');
-                        markerElement.style.setProperty('display', 'flex', 'important');
-                        markerElement.style.setProperty('visibility', 'visible', 'important');
-                        markerElement.style.setProperty('opacity', '1', 'important');
+                if (markerElement) {
+                    // Only update top position, don't touch transform (rotation is set via CSS)
+                    markerElement.style.setProperty('top', markerPosition + 'px', 'important');
+                    markerElement.style.setProperty('position', 'absolute', 'important');
+                    markerElement.style.setProperty('display', 'flex', 'important');
+                    markerElement.style.setProperty('visibility', 'visible', 'important');
+                    markerElement.style.setProperty('opacity', '1', 'important');
+                    markerElement.style.setProperty('z-index', '10', 'important');
+                    
+                    // Set left position differently for desktop vs mobile
+                    // But DON'T set transform - let CSS handle it with rotation
+                    if (timelineData.isMobile) {
                         markerElement.style.setProperty('left', '0', 'important');
-                        markerElement.style.setProperty('transform', 'translateX(-50%)', 'important');
-                        markerElement.style.setProperty('z-index', '10', 'important');
-                        
                         console.log('Mobile marker forced to:', markerPosition + 'px');
-                    }
-                } else {
-                    // DESKTOP: Force with setProperty as well
-                    if (markerElement) {
-                        markerElement.style.setProperty('top', markerPosition + 'px', 'important');
-                        markerElement.style.setProperty('position', 'absolute', 'important');
-                        markerElement.style.setProperty('display', 'flex', 'important');
-                        markerElement.style.setProperty('visibility', 'visible', 'important');
-                        markerElement.style.setProperty('opacity', '1', 'important');
+                    } else {
                         markerElement.style.setProperty('left', '50%', 'important');
-                        markerElement.style.setProperty('transform', 'translateX(-50%)', 'important');
-                        markerElement.style.setProperty('z-index', '10', 'important');
-                        
                         console.log('Desktop marker forced to:', markerPosition + 'px');
                     }
                 }

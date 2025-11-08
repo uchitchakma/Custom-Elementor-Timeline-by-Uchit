@@ -396,7 +396,8 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                     'size' => 0,
                 ],
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-moving-marker' => 'transform: translateX(-50%) rotate({{SIZE}}{{UNIT}});',
+                    '{{WRAPPER}} .timeline-desktop .timeline-moving-marker' => 'transform: translateX(-50%) rotate({{SIZE}}{{UNIT}}) !important;',
+                    '{{WRAPPER}} .timeline-mobile .timeline-moving-marker' => 'transform: translateX(-50%) rotate({{SIZE}}{{UNIT}}) !important;',
                 ],
                 'description' => __('Rotate the marker (useful for custom icons)', 'custom-timeline-by-uchit'),
             ]
