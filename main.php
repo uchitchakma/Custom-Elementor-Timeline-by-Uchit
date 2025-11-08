@@ -139,15 +139,30 @@ class CustomTimelineByUchit {
         $widgets_manager->register(new \CustomTimelineWidget());
     }
     
-    public function enqueue_scripts() {
+     public function enqueue_scripts() {
+        // Ensure jQuery is loaded
+        wp_enqueue_script('jquery');
+        
         wp_register_script(
             'custom-timeline-widget',
             plugins_url('assets/js/main.js', __FILE__),
-            ['jquery', 'elementor-frontend'],
-            '1.0.0',
-            true
+            ['jquery'], // jQuery dependency
+            '1.0.6', // CHANGED - Force cache refresh for mobile progress line fix
+            true // Load in footer
         );
+        
         wp_enqueue_script('custom-timeline-widget');
+        
+        // Add inline script to ensure jQuery compatibility
+        wp_add_inline_script('custom-timeline-widget', '
+            console.log("Custom Timeline Widget script loaded - v1.0.6 (Mobile Progress Line Fix)");
+            if (typeof jQuery !== "undefined") {
+                console.log("jQuery version:", jQuery.fn.jquery);
+                console.log("Window width:", jQuery(window).width());
+            } else {
+                console.error("jQuery not loaded!");
+            }
+        ', 'before');
     }
     
     public function enqueue_styles() {
@@ -155,7 +170,7 @@ class CustomTimelineByUchit {
             'custom-timeline-widget',
             plugins_url('assets/css/style.css', __FILE__),
             [],
-            '1.0.0'
+            '1.0.6' // CHANGED - Force CSS cache refresh
         );
     }
 }

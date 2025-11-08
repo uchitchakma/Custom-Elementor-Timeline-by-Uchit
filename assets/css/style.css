@@ -44,6 +44,7 @@
     height: 0%;
     background-color: #3b82f6;
     transition: height 0.3s ease;
+    z-index: 2;
 }
 
 /* Timeline Item */
@@ -92,33 +93,44 @@
     display: none;
 }
 
-/* Moving Timeline Marker */
+/* Moving Timeline Marker - DESKTOP */
 .timeline-moving-marker {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background-color: #3b82f6;
-    border: 3px solid #ffffff;
-    border-radius: 50%;
-    left: 50%;
-    transform: translateX(-50%);
-    top: 0;
-    z-index: 10;
-    transition: top 0.1s linear;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    position: absolute !important;
+    width: 30px !important;
+    height: 30px !important;
+    background-color: #3b82f6 !important;
+    border: 3px solid #ffffff !important;
+    border-radius: 50% !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    top: 0 !important;
+    z-index: 10 !important;
+    transition: top 0.1s linear !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4) !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: none !important;
+    will-change: top, transform !important;
 }
 
 .timeline-moving-marker[data-marker-type="icon"] {
-    background-color: #ffffff;
+    background-color: #ffffff !important;
 }
 
 .timeline-moving-marker i,
 .timeline-moving-marker svg {
-    color: #3b82f6;
-    fill: #3b82f6;
+    color: #3b82f6 !important;
+    fill: #3b82f6 !important;
+    display: block !important;
+}
+
+/* Keep icon rotation independent from marker rotation */
+.timeline-moving-marker[data-marker-type="icon"] i,
+.timeline-moving-marker[data-marker-type="icon"] svg {
+    transform: rotate(0deg) !important;
 }
 
 /* Pulse Animation for Moving Marker */
@@ -138,68 +150,104 @@
     }
 }
 
-/* Mobile Moving Marker Position */
-.timeline-mobile .timeline-moving-marker {
-    left: 0;
-    transform: translateX(-50%);
+/* Force hardware acceleration for smoother animation */
+.timeline-moving-marker,
+.timeline-line-progress {
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
 
-/* Hover Effects on Timeline Items */
-.timeline-item:hover {
-    /* Optional hover effect */
+/* Timeline Item Passed State */
+.timeline-item {
+    transition: opacity 0.3s ease;
+}
+
+.timeline-item.passed {
+    /* Optional: dim passed items */
+    /* opacity: 0.7; */
+}
+
+.timeline-item.passed .timeline-inner-container {
+    /* Optional: add subtle effect to passed items */
+    /* border-left: 3px solid #3b82f6; */
 }
 
 /* Mobile Layout */
 @media (max-width: 768px) {
     .timeline-desktop {
-        display: none;
+        display: none !important;
     }
 
     .timeline-mobile {
-        display: block;
+        display: block !important;
     }
-
+    
+    /* CRITICAL: Mobile line wrapper must be absolute */
     .timeline-mobile .timeline-line-wrapper {
-        left: 20px;
-        transform: none;
+        position: absolute !important;
+        left: 20px !important;
+        transform: none !important;
+        top: 0 !important;
+        height: 100% !important;
+        width: auto !important;
+        z-index: 1 !important;
     }
 
-    .timeline-mobile .timeline-item {
-        display: block;
-        padding-left: 60px;
-        position: relative;
+    /* CRITICAL: Mobile line must be relative for marker to work */
+    .timeline-mobile .timeline-line {
+        position: relative !important;
+        width: 2px !important;
+        height: 100% !important;
+        background-color: #e5e7eb !important;
+    }
+    
+    /* Mobile progress line - FIXED */
+    .timeline-mobile .timeline-line-progress {
+        position: absolute !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: 0 !important;
+        background-color: #3b82f6 !important;
+        transition: height 0.3s ease-out !important;
+        z-index: 2 !important;
+    }
+    
+    /* CRITICAL: Mobile marker - OVERRIDE desktop styles */
+    .timeline-mobile .timeline-moving-marker {
+        position: absolute !important;
+        left: 0 !important;
+        transform: translateX(-50%) !important;
+        top: 0 !important;
+        display: flex !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 10 !important;
+        transition: none !important;
     }
 
     .timeline-mobile .timeline-dot {
-        position: absolute;
-        left: 11px;
-        top: 0;
+        display: none !important;
     }
 
     .timeline-mobile .timeline-content-left,
     .timeline-mobile .timeline-content-right {
-        padding: 0;
-        text-align: left;
-        margin-bottom: 20px;
+        padding: 0 !important;
+        text-align: left !important;
+        margin-bottom: 20px !important;
     }
 
-    .timeline-mobile .timeline-content-left {
-        margin-bottom: 20px;
+    .timeline-mobile .timeline-item {
+        padding-left: 60px !important;
+        position: relative !important;
+        margin-bottom: 60px !important;
     }
-
-    .timeline-mobile .timeline-content-right {
-        margin-bottom: 0;
+    .timeline-item{
+       grid-template-columns: unset;
     }
-}
-
-/* Tablet Layout */
-@media (max-width: 1024px) and (min-width: 769px) {
-    .timeline-content-left {
-        padding-right: 30px;
-    }
-
-    .timeline-content-right {
-        padding-left: 30px;
+    
+    .timeline-mobile .timeline-content-wrapper {
+        width: 100%;
     }
 }
 
@@ -214,15 +262,11 @@
     }
 
     .timeline-mobile .timeline-item {
-        padding-left: 50px;
+        padding-left: 50px !important;
     }
 
     .timeline-mobile .timeline-line-wrapper {
-        left: 15px;
-    }
-
-    .timeline-mobile .timeline-dot {
-        left: 11px;
+        left: 15px !important;
     }
 }
 
@@ -315,4 +359,78 @@ html {
 
 .timeline-inner-container.loading {
     opacity: 0.5;
+}
+
+/* Animation Classes */
+.timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Accessibility */
+.timeline-moving-marker:focus {
+    outline: none;
+}
+
+/* Print Styles */
+@media print {
+    .timeline-moving-marker {
+        display: none !important;
+    }
+    
+    .timeline-line-progress {
+        height: 100% !important;
+    }
+    
+    .timeline-item {
+        page-break-inside: avoid;
+    }
+}
+
+/* RTL Support */
+[dir="rtl"] .timeline-content-left {
+    padding-right: 0;
+    padding-left: 40px;
+    text-align: left;
+}
+
+[dir="rtl"] .timeline-content-right {
+    padding-left: 0;
+    padding-right: 40px;
+    text-align: right;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .timeline-line {
+        background-color: #000;
+    }
+    
+    .timeline-line-progress {
+        background-color: #0066cc;
+    }
+    
+    .timeline-moving-marker {
+        border-width: 4px !important;
+    }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+    .timeline-moving-marker,
+    .timeline-line-progress,
+    .timeline-item {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* Dark Mode Support (Optional) */
+@media (prefers-color-scheme: dark) {
+    .timeline-placeholder,
+    .timeline-placeholder-editor {
+        background: #1a1a1a;
+        border-color: #333;
+        color: #ccc;
+    }
 }

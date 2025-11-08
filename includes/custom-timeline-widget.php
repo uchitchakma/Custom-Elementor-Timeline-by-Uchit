@@ -304,7 +304,7 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
             ]
         );
 
-        $this->add_control(
+       $this->add_control(
             'moving_marker_animation',
             [
                 'label' => __('Pulse Animation', 'custom-timeline-by-uchit'),
@@ -316,7 +316,158 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
             ]
         );
 
+        $this->add_control(
+            'marker_position_heading',
+            [
+                'label' => __('Position & Rotation', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'marker_horizontal_offset',
+            [
+                'label' => __('Horizontal Offset', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', '%'],
+                'range' => [
+                    'px' => [
+                        'min' => -100,
+                        'max' => 100,
+                    ],
+                    '%' => [
+                        'min' => -50,
+                        'max' => 50,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 0,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-desktop .timeline-moving-marker' => 'margin-left: {{SIZE}}{{UNIT}};',
+                ],
+                'description' => __('Move marker left (negative) or right (positive)', 'custom-timeline-by-uchit'),
+            ]
+        );
+
+        $this->add_responsive_control(
+            'marker_vertical_offset',
+            [
+                'label' => __('Vertical Offset', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', 'vh'],
+                'range' => [
+                    'px' => [
+                        'min' => -200,
+                        'max' => 200,
+                    ],
+                    'vh' => [
+                        'min' => -50,
+                        'max' => 50,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 0,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-desktop .timeline-moving-marker' => 'margin-top: {{SIZE}}{{UNIT}};',
+                ],
+                'description' => __('Move marker up (negative) or down (positive)', 'custom-timeline-by-uchit'),
+            ]
+        );
+
+        $this->add_responsive_control(
+            'marker_rotation',
+            [
+                'label' => __('Rotation', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['deg'],
+                'range' => [
+                    'deg' => [
+                        'min' => 0,
+                        'max' => 360,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'deg',
+                    'size' => 0,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-moving-marker' => 'transform: translateX(-50%) rotate({{SIZE}}{{UNIT}});',
+                ],
+                'description' => __('Rotate the marker (useful for custom icons)', 'custom-timeline-by-uchit'),
+            ]
+        );
+
+        // Mobile specific position controls
+        $this->add_control(
+            'mobile_marker_position_heading',
+            [
+                'label' => __('Mobile Position', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::HEADING,
+                'separator' => 'before',
+            ]
+        );
+
+        $this->add_responsive_control(
+            'mobile_marker_horizontal_offset',
+            [
+                'label' => __('Mobile Horizontal Offset', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', '%'],
+                'range' => [
+                    'px' => [
+                        'min' => -100,
+                        'max' => 100,
+                    ],
+                    '%' => [
+                        'min' => -50,
+                        'max' => 50,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 0,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-mobile .timeline-moving-marker' => 'margin-left: {{SIZE}}{{UNIT}};',
+                ],
+                'description' => __('Adjust horizontal position on mobile', 'custom-timeline-by-uchit'),
+            ]
+        );
+
+        $this->add_responsive_control(
+            'mobile_marker_vertical_offset',
+            [
+                'label' => __('Mobile Vertical Offset', 'custom-timeline-by-uchit'),
+                'type' => \Elementor\Controls_Manager::SLIDER,
+                'size_units' => ['px', 'vh'],
+                'range' => [
+                    'px' => [
+                        'min' => -200,
+                        'max' => 200,
+                    ],
+                    'vh' => [
+                        'min' => -50,
+                        'max' => 50,
+                    ],
+                ],
+                'default' => [
+                    'unit' => 'px',
+                    'size' => 0,
+                ],
+                'selectors' => [
+                    '{{WRAPPER}} .timeline-mobile .timeline-moving-marker' => 'margin-top: {{SIZE}}{{UNIT}};',
+                ],
+                'description' => __('Adjust vertical position on mobile', 'custom-timeline-by-uchit'),
+            ]
+        );
+
         $this->end_controls_section();
+
 
         // Container Style
         $this->start_controls_section(
