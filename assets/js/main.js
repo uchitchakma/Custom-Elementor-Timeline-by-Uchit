@@ -223,7 +223,7 @@
             });
         }
 
-                updateTimelineProgress(timelineData) {
+          updateTimelineProgress(timelineData) {
             if (!timelineData.$line || !timelineData.$line.length) {
                 return;
             }
@@ -257,12 +257,12 @@
                 progress = Math.min(Math.max(progress, 0), 100);
             }
 
-            // Update progress bar - FORCE IT WITH SETPROPERTY
+            // Update progress bar - ONLY SET HEIGHT AND POSITIONING, NOT COLORS
             if ($progress && $progress.length) {
                 const progressElement = $progress[0];
                 if (progressElement) {
                     progressElement.style.setProperty('height', progress + '%', 'important');
-                    progressElement.style.setProperty('background-color', '#3b82f6', 'important');
+                    // REMOVED: background-color - let CSS handle it
                     progressElement.style.setProperty('width', '100%', 'important');
                     progressElement.style.setProperty('position', 'absolute', 'important');
                     progressElement.style.setProperty('top', '0', 'important');
@@ -274,14 +274,13 @@
                 }
             }
 
-            // Update moving marker position - PRESERVE ROTATION
+            // Update moving marker position - ONLY SET POSITIONING, NOT COLORS
             if ($movingMarker && $movingMarker.length) {
                 const markerPosition = (progress / 100) * lineHeight;
                 const markerElement = $movingMarker[0];
                 
                 if (markerElement) {
-                    // Only update top and left position
-                    // DON'T touch transform - let CSS handle rotation
+                    // Only update position properties - let CSS handle all styling
                     markerElement.style.setProperty('top', markerPosition + 'px', 'important');
                     markerElement.style.setProperty('position', 'absolute', 'important');
                     markerElement.style.setProperty('display', 'flex', 'important');

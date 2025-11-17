@@ -152,7 +152,8 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '#e5e7eb',
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-line' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-line' => 'background-color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-mobile .timeline-line' => 'background-color: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -164,11 +165,12 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '#3b82f6',
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-line-progress' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-line-progress' => 'background-color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-mobile .timeline-line-progress' => 'background-color: {{VALUE}} !important;',
                 ],
             ]
         );
-
+        
         $this->end_controls_section();
 
         // Timeline Moving Marker
@@ -239,9 +241,12 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '#3b82f6',
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-moving-marker' => 'background-color: {{VALUE}}; color: {{VALUE}};',
-                    '{{WRAPPER}} .timeline-moving-marker i' => 'color: {{VALUE}};',
-                    '{{WRAPPER}} .timeline-moving-marker svg' => 'fill: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-moving-marker' => 'background-color: {{VALUE}} !important; color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-moving-marker i' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-moving-marker svg' => 'fill: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-mobile .timeline-moving-marker' => 'background-color: {{VALUE}} !important; color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-mobile .timeline-moving-marker i' => 'color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-mobile .timeline-moving-marker svg' => 'fill: {{VALUE}} !important;',
                 ],
             ]
         );
@@ -253,7 +258,8 @@ class CustomTimelineWidget extends \Elementor\Widget_Base {
                 'type' => \Elementor\Controls_Manager::COLOR,
                 'default' => '#ffffff',
                 'selectors' => [
-                    '{{WRAPPER}} .timeline-moving-marker' => 'background-color: {{VALUE}};',
+                    '{{WRAPPER}} .timeline-moving-marker[data-marker-type="icon"]' => 'background-color: {{VALUE}} !important;',
+                    '{{WRAPPER}} .timeline-mobile .timeline-moving-marker[data-marker-type="icon"]' => 'background-color: {{VALUE}} !important;',
                 ],
                 'condition' => [
                     'marker_type' => 'icon',
